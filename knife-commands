@@ -1,0 +1,187 @@
+   10  cat knife.rb
+   12  knife node list 
+   13  knife ssl check
+   20  knife ssl check
+   21  knife node list
+   22  knife bootstrap --help
+   27  knife bootstrap admin@10.128.0.4 -i key 
+   28  knife bootstrap admin@10.128.0.4 -i key  -N node1
+   29  knife bootstrap admin@10.128.0.4 -i key  -N node1 --sudo
+   30  knife bootstrap admin@10.128.0.4 -i key  -N node1 --sudo -y
+   33  knife cookbook create sample
+   44  knife cookbook upload sample
+   45  knife node --help
+   46  knife node list
+   47  knife node run_list add NODE node1 sample
+   48  knife node run_list add node1 sample
+   49  knife --help
+   50  knife --help 2>&1 |grep  ssh
+   51  knife ssh --help
+   52  knife ssh chef-clinet
+   53  knife ssh chef-client
+   54  knife ssh 'name:*' 'sudo chef-client'
+   55  knife ssh 'name:*' 'sudo chef-client' -i key
+   56  knife ssh node1 'sudo chef-client' -i key
+   57  knife ssh 'name:node1' 'sudo chef-client' -i key
+   66  knife node run_list add node1 sample:install
+   67  knife cookbook upload sample
+   68  knife node run_list add node1 sample:install
+   69  knife node run_list add node1 'recipe[sample:install]'
+   70  knife node run_list add node1 recipe[sample:install]'
+   71  knife node run_list add node1 "recipe['sample:install']"
+   72  knife node run_list add node1 'recipe[sample::install]'
+   73  knife ssh 'name:node1' 'sudo chef-client' -i key
+   81  knife cookbook upload sample
+   84  knife cookbook create webserver
+   89  knife cookbook upload webserver
+   91  knife node list
+   92  knife node --help
+   93  knife node show node1
+   94  knife node run_list remove recipe[sample]
+   95  knife node run_list remove node 1recipe[sample]
+   96  knife node run_list remove node1 recipe[sample]
+   97  knife node run_list remove node1 recipe[sample::install]
+   98  knife cookbook upload webserver
+  100  knife node run_list node1 recipe[webserver]
+  101  knife node run_list add node1 recipe[webserver]
+  112  knife cookbook upload webserver
+  124  knife cookbook upload webserver
+  137  knife cookbook upload webserver
+  138  knife node run_list remove node1 recipe['webserver']
+  139  knife node run_list remove node1 recipe[webserver]
+  140  knife node run_list remove node1 recipe[webserver::default]
+  141  knife node run_list remove node1 recipe[webserver]
+  142  knife node show node1
+  143  knife node run_list --help
+  144  knife node run_list node1 recipe[webserver]
+  145  knife node run_list remove node1 recipe[webserver]
+  146  knife node run_list remove node1 recipe[]
+  148  knife node run_list remove node1 recipe[webserver]
+  149  knife node run_list add node1 recipe[webserver::osspec]
+  150  knife bootstrap --help
+  152  knife bootstrap ubuntu@10.128.0.5 -i key -N ubuntu1 --sudo -y
+  153  knife node list
+  154  knife node run_list add ubuntu1 recipe[webserver::osspec]
+  227  knife cookbook upload sample
+  229  knife node list
+  232  knife node show node1
+  233  knife node run_list add node1 recipe[sample::default]
+  251  knife cookbook upload sample
+  255  knife cookbook upload sample
+  257  knife cookbook upload sample
+  259  knife cookbook upload sample
+  262  knife cookbook upload sample
+  264  knife cookbook upload sample
+  266  knife cookbook upload sample
+  288  knife cookbook upload webserver
+  289  knife node show node1
+  290  knife node run_list remove recipe[webserver::osspec],
+  291  knife node run_list remove recipe[webserver::osspec]
+  292  knife node run_list remove node1 recipe[sample::default]
+  293  knife node run_list remove node1 recipe[webserver::osspec]
+  294  knife node run_list add node1 recipe[webserver::new]
+  308  knife cookbook upload webserver
+  312  knife cookbook upload webserver
+  314  knife cookbook upload webserver
+  317  knife cookbook upload webserver
+  319  knife cookbook upload webserver
+  325  knife cookbook upload webserver
+  327  knife cookbook upload webserver
+  330  knife cookbook upload webserver
+  346  knife node show node1
+  348  knife node run_list remove node1 recipe[webserver::new]
+  350  knife node run_list add node1 recipe[webserver::httpd]
+  351  knife node list
+  352  knife node show ubuntu1
+  353  knife node run_list remove ubuntu1 recipe[webserver::osspec]
+  355  knife node run_list add ubuntu1 recipe[webserver::httpd]
+  356  knife cookbook upload webserver
+  364  knife cookbook upload webserver
+  389  knife cookbook upload webserver
+  391  knife cookbook upload webserver
+  409  history |grep knife 
+  421  history |grep knife >knife-commands
+
+
+
+
+------ 
+
+DATA-BAGS:
+---------
+
+cookbook for databag example is :: useradd
+
+knife data bag create users
+
+<Assuming I am in chef-repo directory>
+
+mkdir data_bags
+cd data_bags
+mkdir users
+cd users
+vi rama.json
+	{
+		"id" : "rama",
+		"gid" : 500
+	}
+:wq
+
+knife data bag from file users rama.json
+
+Add useradd recipe to the node
+
+knife node run_list add node1 recipe['useradd::userdata']
+
+Got client and run "chef-client"
+
+knife search users "id:*"
+knife search users "*:*"
+
+knife data bag edit users rama
+
+knife data bag remove users
+
+
+-----------------------
+
+
+ROLE
+-------------------------------------
+  849  knife node run_list remove chefprod1 recipe[apache]
+  850  knife node run_list remove node2 recipe[apache]
+  851  knife node run_list add node2 role[webserver]
+  852  knife node run_list add chefprod1 role[webserver]
+  853  knife node show node2
+  854  knife node run_list remove node2 recipe[roles]
+  855  knife node run_list remove node2 role[webserver]
+  856  knife node --help
+  857  knife role --help
+  858  knife node run_list remove node2 'role[webserver]'
+  859  knife node show node1
+  860  knife node show node2
+  861  knife node run_list add node2 'role[webserver]'
+  862  knife node run_list remove node2 'role[webserver]'
+  863  knife node run_list add node2 role[webserver]
+  864  knife node run_list remove node2 recipe[roles]
+  866  knife role --help
+  867  knife node run_list add node2 'role[webserver]'
+  868  knife node run_list add chefprod1 'role[webserver]'
+  869  knife node run_list remove chefprod1 recipe[roles]
+  870  knife node show node2
+  871  knife node run_list remove node2 'role[webserver]'
+  872  knife node run_list remove chefprod1 'role[webserver]'
+  873  knife role --help
+  874  knife role delete webserer
+  875  knife role delete webserver
+  877  knife role list
+  882  knife role from file webrole.rb
+  883  knife role list
+  885  knife node run_list add node2 'role[webrole]'
+  886  knife node show node2
+  888  knife cookbook upload apache
+  889  knife node run_list add chefprod1 'role[webrole]'
+  909  knife role forl file webrole.rb
+  910  knife role from file webrole.rb
+  917  /opt/chefdk/embedded/bin/gem install knife-google
+

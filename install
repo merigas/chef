@@ -1,0 +1,84 @@
+
+Follow these steps assuming you have disabled 
+SELINuX & FIREWALL. OS is also Centos 7 for all Server the configurations(server,DK,node).
+
+Install Chef Server:
+--------------------
+
+1) Download https://packages.chef.io/files/stable/chef-server/12.11.1/el/7/chef-server-core-12.11.1-1.el7.x86_64.rpm
+
+wget https://packages.chef.io/files/stable/chef-server/12.11.1/el/7/chef-server-core-12.11.1-1.el7.x86_64.rpm
+
+2) rpm -ivh chef-server-core-12.11.1-1.el7.x86_64.rpm
+
+3) chef-server-ctl reconfigure
+
+4) create user
+chef-server-ctl user-create raghu Raghu K raghuk.vit@gmail.com 'abcd@123' --filename /opt/raghu.pem
+
+5) create orgnaization
+
+ chef-server-ctl org-create vit 'VerionIT -- Ameerpet' --association_user raghu --filename /opt/vit.pem
+
+6) Install Management console.
+	a) chef-server-ctl install chef-manage
+	b) chef-server-ctl reconfigure
+	c) chef-manage-ctl reconfigure
+
+
+Install Chef DK:
+------------------
+
+1) rpm -Uvh https://packages.chef.io/files/stable/chefdk/1.1.16/el/7/chefdk-1.1.16-1.el7.x86_64.rpm
+
+
+
+2) chef verify
+
+3) Download Starter-Kit and upload to server
+
+4) unzip chef-starter.zip
+
+5) As we are having selfsigned certificate we have to download that certiificate 
+
+	a) knife ssl check
+	b) Copy crt file from server to chefdk
+	Server Loc: /var/opt/opscode/nginx/ca/`hostname`.crt		Chec DK Localtion: chef-repo/.chef/trusted_certs
+
+	ex: 
+		mkdir /home/admin/chef-repo/.chef/trusted_certs
+		vi chef-server-hostname.crt
+		<opy the content from server>
+6) Verfy again if chefdk is ableto connect to chef server or not.
+
+knife ssl check
+knofe node list
+
+
+Install Node from Chef DK server:
+----------------------------------
+
+1) COpy pricate key file to chefDK machine to connect over ssh to chef node.
+
+key Filename : key
+Assuming admin as the ssh user run the following command.
+
+knife bootstrap admin@10.128.0.4 -i key  -N node1 --sudo -y
+
+
+2) Go to chef node and run the following command.
+
+chef-client
+
+
+
+Add Run list to nodes from DK:
+---------------------------------
+
+knife node run_list add node1 'recipe[sample::install]'
+
+
+Run the chef-client command ffrom DK:
+------------------------------------------
+
+knife ssh 'name:node1' 'sudo chef-client' -i key

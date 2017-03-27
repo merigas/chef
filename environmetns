@@ -1,0 +1,120 @@
+cd  chef-repo
+
+mkdir environments
+cd environments
+
+vim dev.rb
+
+	name "DEV"
+	description "Developement Servers"
+
+vim prod.rb
+	
+	name "PROD"
+	description "Production Servers"
+
+knife environment from file dev.rb
+knife environment from file prod.rb
+
+
+<Verify the environments created or not>
+
+knife environment list 
+knife environment list -w
+
+<Goto browser and login and verify environments>
+
+
+#### Add a host to a particular environment
+
+vi /etc/chef/client.rb
+
+	## Add the following line to EOF
+	environment "PROD"  or "DEV"
+
+# TO update the your client environment use chef-client command once and it updates your env to your chef server.
+
+
+### For testing I have created a cookbook "apache"
+	attributes/default.rb
+	recipies/default.rb
+	templates/default/index.html.erb
+
+-----------------------------------
+Two follwing nodes
+	1) PROD : chefprod1
+	2) DEV: chefnode1
+------------------------------------
+
+knife node run_list add  chefprod1 recipe['apache']
+knife node run_list add  chefnode1 recipe['apache']
+
+
+
+chefprod1>> chef-client
+chefnode1>> chef-client
+
+
+
+ENVIRONMENT TESTING 1: Using different attribitues--
+----------------------------------------------------------------
+
+
+cd chef-repo
+cd environments
+
+cat dev.rb
+
+	name "DEV"
+	description "Dev Servers environment"
+	override_attributes ({
+        	"environ" => "DEV"
+	})
+
+knife environment friom file dev.rb
+
+
+
+chefprod1>> chef-client    <<-- Here you should not see any difference
+chefnode1>> chef-client    <<-- You will see some difference in index.html
+
+
+
+ENVIRONMENT TESTING 2: Using different cookbook versions::
+----------------------------------------------------------------
+
+cd chef-repo
+cd environments
+
+cat dev.rb
+
+	name "DEV"
+	description "Dev Servers environment"
+	cookbook "apache","0.1.1"
+	override_attributes ({
+        	"environ" => "DEV"
+	})
+
+cat prod.rb
+	name "PROD"
+	description "PROD Servers environment"
+	cookbook "apache","0.1.0"
+
+
+
+knife environment friom file dev.rb
+knife environment friom file prod.rb
+
+### Inside cookbook update the following
+	1) Update templates/default/index.html.erb
+		Addd some line
+	2) Update metadat.erb
+		from 
+		version          '0.1.0'
+		to
+		version          '0.1.1'
+
+knife cookbook upload apache	
+
+chefprod1>> chef-client    <<-- Here you should not see any difference
+chefnode1>> chef-client    <<-- You will see some difference in index.html
