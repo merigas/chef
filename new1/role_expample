@@ -1,0 +1,19 @@
+Roles :
+-------
+
+cd chef-repo
+mkdir roles
+cd role
+
+vim appstack.rb
+
+name "appstack"
+description "WEb Server + App Server"
+run_list 'recipe[httpd2]',
+	 'recipe[tomcat]'
+
+
+--
+knife role from file appstack.rb
+
+knife node run_list add chef7 "role[appstack]" 

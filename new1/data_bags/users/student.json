@@ -1,0 +1,7 @@
+{
+	"id" : "student",
+	"name" : "student",
+	"home" : "/apps/student",
+	"shell" : "/bin/bash"
+
+}
